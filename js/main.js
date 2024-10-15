@@ -1,57 +1,59 @@
 "use strict";
 
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
-let minDimension = Math.min(window.innerWidth, window.innerHeight);
-canvas.width = minDimension;
-canvas.height = minDimension;
-
-let cellWidth = canvas.width / 15;
-let cellHeight = canvas.height / 15;
-
-let map;
-const walls = [];
-
 class Wall {
    constructor({ position }) {
+      this.canvas = document.getElementById("gameCanvas");
+      this.ctx = this.canvas.getContext("2d");
+
+      this.minDimension = Math.min(window.innerWidth, window.innerHeight);
+      this.canvas.width = this.minDimension;
+      this.canvas.height = this.minDimension;
+
+      this.cellWidth = this.canvas.width / 15;
+      this.cellHeight = this.canvas.height / 15;
+
       this.position = position;
-      this.cellWidth = canvas.width / 15;
-      this.cellHeight = canvas.height / 15;
    }
 
    draw() {
-      ctx.fillStyle = "#B32D00";
-      ctx.fillRect(this.position.x, this.position.y, this.cellWidth, this.cellHeight);
+      this.ctx.fillStyle = "#B32D00";
+      this.ctx.fillRect(this.position.x, this.position.y, this.cellWidth, this.cellHeight);
    }
 
    static generateWalls(rows, columns, wallsNeeded) {
-      Wall.generate2DArray(rows, columns);
-      Wall.getRandomPosition(rows, columns, wallsNeeded);
+      const instance = new Wall({ position: { x: 0, y: 0 } });
+      let map = Wall.generate2DArray(rows, columns);
+      Wall.getRandomPosition(map, rows, columns, wallsNeeded);
+
+      let walls = [];
 
       map.forEach((row, rowIndex) => {
          row.forEach((cell, columnIndex) => {
-            switch (cell) {
-               case '1':
-                  walls.push(new Wall({
-                     position: {
-                        x: cellWidth * columnIndex,
-                        y: cellHeight * rowIndex
-                     }
-                  }));
-                  break;
+            if (cell === '1') {
+               walls.push(new Wall({
+                  position: {
+                     x: instance.cellWidth * columnIndex,
+                     y: instance.cellHeight * rowIndex
+                  }
+               }));
             }
          });
       });
+
+      walls.forEach((wall) => {
+         wall.draw();
+      });
+
+      return walls;
    }
 
    static generate2DArray(rows, columns) {
-      map = Array.from({ length: rows }, () =>
+      return Array.from({ length: rows }, () =>
          Array.from({ length: columns }, () => '0')
       );
    }
 
-   static getRandomPosition(rows, columns, wallsNeeded) {
+   static getRandomPosition(map, rows, columns, wallsNeeded) {
       for (let i = 0; i < wallsNeeded; i++) {
          const x = Math.floor(Math.random() * columns);
          const y = Math.floor(Math.random() * rows);
@@ -63,10 +65,6 @@ class Wall {
    }
 }
 
-Wall.generateWalls(15, 15, 10);
+const walls = Wall.generateWalls(15, 15, 10);
 
-walls.forEach((wall) => {
-   wall.draw();
-});
-
-console.log(map);
+console.log(walls);
