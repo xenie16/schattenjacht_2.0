@@ -3,9 +3,25 @@
 import { Entity } from "./Entity.js";
 
 export class Wall extends Entity {
-   constructor({ position, rows, cols, cellWidth, cellHeight, wallId, wallColor, numWalls, ctx, wallShape }) {
 
-      super(position, rows, cols, cellWidth, cellHeight, wallId, wallColor, numWalls, ctx, wallShape);
+   static id = 1
+   static numEntities = 5
+   static color = "#B32D00"
+   static shape = "rect"
+
+   constructor({ position, rows, cols, cellWidth, cellHeight, ctx }) {
+
+      super(
+         position,
+         rows,
+         cols,
+         cellWidth,
+         cellHeight,
+         Wall.id,
+         Wall.color,
+         Wall.numEntities,
+         ctx,
+         Wall.shape);
    }
 }
 
