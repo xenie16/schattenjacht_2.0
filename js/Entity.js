@@ -2,7 +2,9 @@
 
 export class Entity {
 
-   constructor(position, rows = 15, cols = 15, cellWidth, cellHeight, color, numEntities, ctx) {
+   static sharedMap = null;
+
+   constructor(position, rows = 15, cols = 15, cellWidth, cellHeight, entityId, color, numEntities, ctx, shape) {
 
       this.position = position;
       this.ctx = ctx;
@@ -13,39 +15,53 @@ export class Entity {
       this.cellWidth = cellWidth;
       this.cellHeight = cellHeight;
 
+      this.entityId = entityId;
       this.numEntities = numEntities;
       this.color = color;
+      this.shape = shape;
+
+      if (Entity.sharedMap === null) {
+         Entity.sharedMap = this.generate2DArray(this.rows, this.cols);
+      }
    }
 
-   draw() {
+   draw(position) {
       this.ctx.fillStyle = this.color;
-      this.ctx.fillRect(this.position.x, this.position.y, this.cellWidth, this.cellHeight);
+      switch (this.shape) {
+         case 'rect':
+            this.ctx.fillRect(position.x, position.y, this.cellWidth, this.cellHeight);
+            break;
+         case 'circle':
+            this.ctx.beginPath();
+            this.ctx.arc(position.x + this.cellWidth / 2, position.y + this.cellHeight / 2, this.cellWidth / 2, 0, 2 * Math.PI);
+            this.ctx.fill();
+            break;
+      }
    }
 
    generateEntities() {
-      let map = this.generate2DArray(this.rows, this.cols);
+      let map = Entity.sharedMap;
       this.getRandomPosition(map);
 
       let entities = [];
 
       map.forEach((row, rowIndex) => {
          row.forEach((cell, columnIndex) => {
-            switch (cell) {
-               case '1':
-                  entities.push(new Entity({
-                     x: this.cellWidth * columnIndex,
-                     y: this.cellHeight * rowIndex
-                  }, this.rows, this.cols, this.cellWidth, this.cellHeight, this.color, this.numEntities, this.ctx));
-                  break;
+
+            if (cell === this.entityId) {
+               const position = {
+                  x: this.cellWidth * columnIndex,
+                  y: this.cellHeight * rowIndex
+               };
+               entities.push(position);
             }
          });
       });
 
-      entities.forEach((entity) => {
-         entity.draw();
+      entities.forEach((position) => {
+         this.draw(position);
       });
 
-      console.log(map)
       return entities;
    }
 
@@ -56,13 +72,16 @@ export class Entity {
    }
 
    getRandomPosition(map) {
-
       for (let i = 0; i < this.numEntities; i++) {
-         const x = Math.floor(Math.random() * this.cols);
-         const y = Math.floor(Math.random() * this.rows);
+         let placed = false;
+         while (!placed) {
+            const x = Math.floor(Math.random() * this.cols);
+            const y = Math.floor(Math.random() * this.rows);
 
-         if (map[y][x] === '0') {
-            map[y][x] = '1';
+            if (map[y][x] === '0') {
+               map[y][x] = this.entityId;
+               placed = true;
+            }
          }
       }
    }
