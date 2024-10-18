@@ -3,6 +3,10 @@
 import { Entity } from "./Entity.js";
 
 export class MovableEntity extends Entity {
+
+   static moveCounter = 0;
+   static TotalMovableEntities = 2;
+
    constructor(position, rows, cols, cellWidth, cellHeight, entityId, color, numEntities, ctx, shape) {
       super(
          position,
@@ -67,6 +71,12 @@ export class MovableEntity extends Entity {
       });
 
       Entity.sharedMap = newMap;
-      this.redrawAllEntities();
+      MovableEntity.moveCounter++;
+
+
+      if (MovableEntity.moveCounter === MovableEntity.TotalMovableEntities) {
+         MovableEntity.moveCounter = 0;
+         this.redrawAllEntities();
+      }
    }
 }
