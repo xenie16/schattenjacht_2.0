@@ -73,99 +73,46 @@ export class Entity {
 
    getRandomPosition(map) {
       for (let i = 0; i < this.numEntities; i++) {
-         let placed = false;
-         while (!placed) {
-            const x = Math.floor(Math.random() * this.cols);
-            const y = Math.floor(Math.random() * this.rows);
-
-            if (map[y][x] === 0) {
-               map[y][x] = this.entityId;
-               placed = true;
-            }
-         }
+         let x, y;
+         do {
+            x = Math.floor(Math.random() * this.cols);
+            y = Math.floor(Math.random() * this.rows);
+         } while (map[y][x] !== 0);
+         map[y][x] = this.entityId;
       }
+
    }
 
    findAllEntities(entityId) {
       let locations = [];
 
-      for (let row = 0; row < Entity.sharedMap.length; row++) {
-         for (let col = 0; col < Entity.sharedMap[row].length; col++) {
-            if (Entity.sharedMap[row][col] === entityId) {
-               locations.push({ x: col, y: row });
+      Entity.sharedMap.forEach((row, rowIndex) => {
+         row.forEach((cell, colIndex) => {
+            if (cell === entityId) {
+               locations.push({ x: colIndex, y: rowIndex });
             }
-         }
-      }
+         });
+      });
+
 
       return locations;
    }
 
-   // moveEntities(key) {
-   //    let entities = this.findAllEntities();
-   //    if (entities.length === 0) {
-   //       console.error("No entities found to move.");
-   //       return;
-   //    }
-
-   //    let newMap = JSON.parse(JSON.stringify(Entity.sharedMap));
-
-   //    entities.forEach(entity => {
-   //       let x = entity.x;
-   //       let y = entity.y;
-
-   //       let newX = x;
-   //       let newY = y;
-
-   //       switch (key) {
-   //          case 'ArrowUp':
-   //             if (y > 0 && Entity.sharedMap[y - 1][x] === 0) {
-   //                newY = y - 1;
-   //             }
-   //             break;
-   //          case 'ArrowDown':
-   //             if (y < this.rows - 1 && Entity.sharedMap[y + 1][x] === 0) {
-   //                newY = y + 1;
-   //             }
-   //             break;
-   //          case 'ArrowLeft':
-   //             if (x > 0 && Entity.sharedMap[y][x - 1] === 0) {
-   //                newX = x - 1;
-   //             }
-   //             break;
-   //          case 'ArrowRight':
-   //             if (x < this.cols - 1 && Entity.sharedMap[y][x + 1] === 0) {
-   //                newX = x + 1;
-   //             }
-   //             break;
-   //          default:
-   //             console.warn("Invalid key pressed.");
-   //             return;
-   //       }
-
-   //       newMap[y][x] = 0;
-   //       newMap[newY][newX] = this.entityId;
-   //    });
-
-   //    Entity.sharedMap = newMap;
-
-   //    this.redrawAllEntities();
-   // }
-
    redrawAllEntities() {
       this.ctx.clearRect(0, 0, this.cols * this.cellWidth, this.rows * this.cellHeight);
 
-      for (let row = 0; row < Entity.sharedMap.length; row++) {
-         for (let col = 0; col < Entity.sharedMap[row].length; col++) {
-            const entityId = Entity.sharedMap[row][col];
+      Entity.sharedMap.forEach((row, rowIndex) => {
+         row.forEach((entityId, colIndex) => {
             if (entityId !== 0) {
-               const position = { x: col * this.cellWidth, y: row * this.cellHeight };
-
+               const position = { x: colIndex * this.cellWidth, y: rowIndex * this.cellHeight };
                const entityMetadata = Entity.entityRegistry[entityId];
+
                if (entityMetadata) {
                   this.draw(position, entityMetadata.shape, entityMetadata.color);
                }
             }
-         }
-      }
+         });
+      });
+
    }
 }
