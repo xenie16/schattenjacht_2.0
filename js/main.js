@@ -21,13 +21,10 @@ const sharedConfig = { rows, cols, cellWidth, cellHeight, ctx };
 
 const player = new Player(sharedConfig);
 const enemy = new Enemy(sharedConfig);
+const wall = new Wall(sharedConfig);
+const treasure = new Treasure(sharedConfig);
 
-const entities = [
-   new Wall(sharedConfig),
-   player,
-   enemy,
-   new Treasure(sharedConfig),
-];
+const entities = [wall, player, enemy, treasure];
 
 entities.forEach(entity => entity.generateEntities());
 
