@@ -12,12 +12,12 @@ const rows = 15;
 const cols = 15;
 
 const canvasManager = new CanvasManager({ canvas, rows, cols });
-const ctx = canvasManager.getContext();
-const cellWidth = canvasManager.getCellWidth();
-const cellHeight = canvasManager.getCellHeight();
+let ctx = canvasManager.getContext();
+let cellWidth = canvasManager.getCellWidth();
+let cellHeight = canvasManager.getCellHeight();
 
 
-const sharedConfig = { rows, cols, cellWidth, cellHeight, ctx };
+let sharedConfig = { rows, cols, cellWidth, cellHeight, ctx };
 
 const player = new Player(sharedConfig);
 const enemy = new Enemy(sharedConfig);
@@ -33,4 +33,20 @@ addEventListener("keydown", ({ key }) => {
       player.movePlayer(key);
       enemy.moveEnemy();
    }
+});
+
+addEventListener("resize", () => {
+   canvasManager.setCanvasDimensions();
+
+   ctx = canvasManager.getContext();
+   cellWidth = canvasManager.getCellWidth();
+   cellHeight = canvasManager.getCellHeight();
+
+   entities.forEach(entity => {
+      entity.cellWidth = cellWidth,
+         entity.cellHeight = cellHeight,
+         entity.ctx = ctx
+   });
+
+   player.redrawAllEntities(); //redraws all entities, not only player
 });
