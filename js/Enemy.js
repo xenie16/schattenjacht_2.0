@@ -25,13 +25,7 @@ export class Enemy extends Entity {
 
    moveEnemy() {
       let enemies = this.findAllEntities(Enemy.id);
-
-      if (enemies.length === 0) {
-         console.error("No enemies found to move.");
-         return;
-      }
-
-      let newMap = JSON.parse(JSON.stringify(Entity.sharedMap));
+      let newMap = Entity.sharedMap;
 
       enemies.forEach(enemy => {
          let x = enemy.x;
@@ -44,33 +38,37 @@ export class Enemy extends Entity {
 
          switch (direction) {
             case 0: // up
-               if (y > 0 && newMap[y - 1][x] === '0') {
+               if (y > 0 && this.canMoveTo(newMap[y - 1][x])) {
                   newY = y - 1;
                }
                break;
             case 1: // down
-               if (y < this.rows - 1 && newMap[y + 1][x] === '0') {
+               if (y < this.rows - 1 && this.canMoveTo(newMap[y + 1][x])) {
                   newY = y + 1;
                }
                break;
             case 2: // left
-               if (x > 0 && newMap[y][x - 1] === '0') {
+               if (x > 0 && this.canMoveTo(newMap[y][x - 1])) {
                   newX = x - 1;
                }
                break;
             case 3: // right
-               if (x < this.cols - 1 && newMap[y][x + 1] === '0') {
+               if (x < this.cols - 1 && this.canMoveTo(newMap[y][x + 1])) {
                   newX = x + 1;
                }
                break;
          }
 
-         newMap[y][x] = '0';
+         newMap[y][x] = 0;
          newMap[newY][newX] = Enemy.id;
       });
 
       Entity.sharedMap = newMap;
 
       this.redrawAllEntities();
+   }
+
+   canMoveTo(targetId) {
+      return targetId === 0 || targetId === 2;
    }
 }

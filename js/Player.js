@@ -26,8 +26,7 @@ export class Player extends Entity {
 
    movePlayer(key) {
       let players = this.findAllEntities(Player.id);
-
-      let newMap = JSON.parse(JSON.stringify(Entity.sharedMap));
+      let newMap = Entity.sharedMap;
 
       players.forEach(player => {
          let x = player.x;
@@ -38,36 +37,40 @@ export class Player extends Entity {
 
          switch (key) {
             case 'ArrowUp':
-               if (y > 0 && newMap[y - 1][x] === '0') {
+               if (y > 0 && this.canMoveTo(newMap[y - 1][x])) {
                   newY = y - 1;
                }
                break;
             case 'ArrowDown':
-               if (y < this.rows - 1 && newMap[y + 1][x] === '0') {
+               if (y < this.rows - 1 && this.canMoveTo(newMap[y + 1][x])) {
                   newY = y + 1;
                }
                break;
             case 'ArrowLeft':
-               if (x > 0 && newMap[y][x - 1] === '0') {
+               if (x > 0 && this.canMoveTo(newMap[y][x - 1])) {
                   newX = x - 1;
                }
                break;
             case 'ArrowRight':
-               if (x < this.cols - 1 && newMap[y][x + 1] === '0') {
+               if (x < this.cols - 1 && this.canMoveTo(newMap[y][x + 1])) {
                   newX = x + 1;
                }
                break;
-            default:
-               console.warn("Invalid key pressed.");
-               return;
          }
 
-         newMap[y][x] = '0';
-         newMap[newY][newX] = Player.id;
+         if (newX !== x || newY !== y) {
+            newMap[y][x] = 0;
+            newMap[newY][newX] = Player.id;
+         }
       });
 
       Entity.sharedMap = newMap;
 
       this.redrawAllEntities();
+   }
+
+
+   canMoveTo(targetId) {
+      return targetId === 0 || targetId === 4;
    }
 }

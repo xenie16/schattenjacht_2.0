@@ -73,7 +73,7 @@ export class Entity {
 
    generate2DArray() {
       return Array.from({ length: this.rows }, () =>
-         Array.from({ length: this.cols }, () => '0')
+         Array.from({ length: this.cols }, () => 0)
       );
    }
 
@@ -84,7 +84,7 @@ export class Entity {
             const x = Math.floor(Math.random() * this.cols);
             const y = Math.floor(Math.random() * this.rows);
 
-            if (map[y][x] === '0') {
+            if (map[y][x] === 0) {
                map[y][x] = this.entityId;
                placed = true;
             }
@@ -124,22 +124,22 @@ export class Entity {
 
    //       switch (key) {
    //          case 'ArrowUp':
-   //             if (y > 0 && Entity.sharedMap[y - 1][x] === '0') {
+   //             if (y > 0 && Entity.sharedMap[y - 1][x] === 0) {
    //                newY = y - 1;
    //             }
    //             break;
    //          case 'ArrowDown':
-   //             if (y < this.rows - 1 && Entity.sharedMap[y + 1][x] === '0') {
+   //             if (y < this.rows - 1 && Entity.sharedMap[y + 1][x] === 0) {
    //                newY = y + 1;
    //             }
    //             break;
    //          case 'ArrowLeft':
-   //             if (x > 0 && Entity.sharedMap[y][x - 1] === '0') {
+   //             if (x > 0 && Entity.sharedMap[y][x - 1] === 0) {
    //                newX = x - 1;
    //             }
    //             break;
    //          case 'ArrowRight':
-   //             if (x < this.cols - 1 && Entity.sharedMap[y][x + 1] === '0') {
+   //             if (x < this.cols - 1 && Entity.sharedMap[y][x + 1] === 0) {
    //                newX = x + 1;
    //             }
    //             break;
@@ -148,7 +148,7 @@ export class Entity {
    //             return;
    //       }
 
-   //       newMap[y][x] = '0';
+   //       newMap[y][x] = 0;
    //       newMap[newY][newX] = this.entityId;
    //    });
 
@@ -163,7 +163,7 @@ export class Entity {
       for (let row = 0; row < Entity.sharedMap.length; row++) {
          for (let col = 0; col < Entity.sharedMap[row].length; col++) {
             const entityId = Entity.sharedMap[row][col];
-            if (entityId !== '0') {
+            if (entityId !== 0) {
                const position = { x: col * this.cellWidth, y: row * this.cellHeight };
 
                const entityMetadata = Entity.entityRegistry[entityId];
