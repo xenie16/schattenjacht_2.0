@@ -1,8 +1,8 @@
 "use strict";
 
-import { Entity } from "./Entity.js";
+import { MovableEntity } from "./MovableEntity.js";
 
-export class Player extends Entity {
+export class Player extends MovableEntity {
 
    static id = 2;
    static numEntities = 1;
@@ -25,50 +25,8 @@ export class Player extends Entity {
    }
 
    movePlayer(key) {
-      let players = this.findAllEntities(Player.id);
-      let newMap = Entity.sharedMap;
-
-      players.forEach(player => {
-         let x = player.x;
-         let y = player.y;
-
-         let newX = x;
-         let newY = y;
-
-         switch (key) {
-            case 'ArrowUp':
-               if (y > 0 && this.canMoveTo(newMap[y - 1][x])) {
-                  newY = y - 1;
-               }
-               break;
-            case 'ArrowDown':
-               if (y < this.rows - 1 && this.canMoveTo(newMap[y + 1][x])) {
-                  newY = y + 1;
-               }
-               break;
-            case 'ArrowLeft':
-               if (x > 0 && this.canMoveTo(newMap[y][x - 1])) {
-                  newX = x - 1;
-               }
-               break;
-            case 'ArrowRight':
-               if (x < this.cols - 1 && this.canMoveTo(newMap[y][x + 1])) {
-                  newX = x + 1;
-               }
-               break;
-         }
-
-         if (newX !== x || newY !== y) {
-            newMap[y][x] = 0;
-            newMap[newY][newX] = Player.id;
-         }
-      });
-
-      Entity.sharedMap = newMap;
-
-      this.redrawAllEntities();
+      this.move(key);
    }
-
 
    canMoveTo(targetId) {
       return targetId === 0 || targetId === 4;
