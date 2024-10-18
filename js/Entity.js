@@ -50,8 +50,6 @@ export class Entity {
       let map = Entity.sharedMap;
       this.getRandomPosition(map);
 
-      let entities = [];
-
       map.forEach((row, rowIndex) => {
          row.forEach((cell, columnIndex) => {
             if (cell === this.entityId) {
@@ -59,16 +57,12 @@ export class Entity {
                   x: this.cellWidth * columnIndex,
                   y: this.cellHeight * rowIndex
                };
-               entities.push(position);
+
+               this.draw(position);
             }
          });
       });
 
-      entities.forEach((position) => {
-         this.draw(position);
-      });
-
-      return entities;
    }
 
    generate2DArray() {
