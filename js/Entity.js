@@ -101,8 +101,19 @@ export class Entity {
    redrawAllEntities() {
       this.ctx.clearRect(0, 0, this.cols * this.cellWidth, this.rows * this.cellHeight);
 
+      let containsPlayer = false;
+      let containsTreasure = false;
+
       Entity.sharedMap.forEach((row, rowIndex) => {
          row.forEach((entityId, colIndex) => {
+
+            if (entityId === 2) {
+               containsPlayer = true;
+            }
+            if (entityId === 4) {
+               containsTreasure = true;
+            }
+
             if (entityId !== 0) {
                const position = { x: colIndex * this.cellWidth, y: rowIndex * this.cellHeight };
                const entityMetadata = Entity.entityRegistry[entityId];
@@ -114,5 +125,16 @@ export class Entity {
          });
       });
 
+      setTimeout(() => {
+         if (!containsPlayer) {
+            alert('Game Over!');
+            location.reload();
+         }
+
+         if (!containsTreasure) {
+            alert('You Win!');
+            location.reload();
+         }
+      }, 10);
    }
 }
