@@ -19,11 +19,21 @@ const cellHeight = canvasManager.getCellHeight();
 
 const sharedConfig = { rows, cols, cellWidth, cellHeight, ctx };
 
+const player = new Player(sharedConfig);
+const enemy = new Enemy(sharedConfig);
+
 const entities = [
    new Wall(sharedConfig),
-   new Player(sharedConfig),
-   new Enemy(sharedConfig),
+   player,
+   enemy,
    new Treasure(sharedConfig),
 ];
 
 entities.forEach(entity => entity.generateEntities());
+
+addEventListener("keydown", ({ key }) => {
+   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+      player.movePlayer(key);
+      enemy.moveEnemy();
+   }
+});
